@@ -20,7 +20,7 @@ public class JdbcMemoRepository {
     }
 
     public Memo save(Memo memo){
-        String sql = "insert into memo values(?.?)";
+        String sql = "insert into memo values(?,?)";
         jdbcTemplate.update(sql,memo.getId(),memo.getText());
         return memo;
     }
