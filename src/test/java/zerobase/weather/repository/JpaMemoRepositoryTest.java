@@ -12,7 +12,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
+@Transactional // 모든 과정을 Rollback 해줌
 class JpaMemoRepositoryTest { //jpa는 java ORM 기술의 표준이다.
 
     @Autowired
