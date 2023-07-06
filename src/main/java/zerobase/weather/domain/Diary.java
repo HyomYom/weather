@@ -25,8 +25,8 @@ public class Diary {
     private String text;
     private LocalDate date;
 
-    public void setDateWeather(DateWeather dateWeather){
-        Diary.builder()
+    public static Diary setDateWeather(DateWeather dateWeather){
+        return Diary.builder()
                 .date(dateWeather.getDate())
                 .weather(dateWeather.getWeather())
                 .icon(dateWeather.getIcon())

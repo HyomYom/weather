@@ -7,11 +7,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import zerobase.weather.WeatherApplication;
 import zerobase.weather.domain.DateWeather;
 import zerobase.weather.domain.Diary;
 import zerobase.weather.repository.DateWeatherRepository;
@@ -28,11 +31,13 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DiaryService {
     @Value("${openweathermap.key}")
     private String apiKey;
     private final DiaryRepository diaryRepository;
     private final DateWeatherRepository dateWeatherRepository;
+    private static final Logger logger = LoggerFactory.getLogger(WeatherApplication.class);
 
 //    public DiaryService(DiaryRepository diaryRepository) {
 //        this.diaryRepository = diaryRepository;
@@ -40,11 +45,11 @@ public class DiaryService {
 
     @Transactional
     @Scheduled(cron = "0 0 1 * * *") // 초 분 시 년 원 일 / 매 새벽 1시
-    public void saveWeatherDate(){
+    public void saveWeatherDate() {
         dateWeatherRepository.save(getWeatherFromApi());
     }
 
-    private DateWeather getWeatherFromApi(){
+    private DateWeather getWeatherFromApi() {
         // open weather map에서 날쎄 데이터 가져오기
         String weatherData = getWeatherString();
         // 받아온 날씨 json 파싱하기
@@ -60,8 +65,10 @@ public class DiaryService {
     }
 
 
-@Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date, String text) {
+        logger.info("started to create diary");
+        System.out.println("started to create diary");
         // open weather map에서 날쎄 데이터 가져오기
 //        String weatherData = getWeatherString();
         // 받아온 날씨 json 파싱하기
@@ -69,23 +76,23 @@ public class DiaryService {
 
         // 수정 이후
         // 날씨 데이터 가져오기 (API 에서 가져오기? or DB에서 가져오기?)
-    DateWeather dateWeather = getDateWeather(date);
+        DateWeather dateWeather = getDateWeather(date);
+        System.out.println(dateWeather.getIcon());
 
 
-
-    // 파싱된 데이터  +  일기 값 우리 db에 넣기
-        Diary nowDiary = new Diary();
-        nowDiary.setDateWeather(dateWeather);
+        // 파싱된 데이터  +  일기 값 우리 db에 넣기
+        Diary nowDiary = Diary.setDateWeather(dateWeather);
         nowDiary.setText(text);
         nowDiary.setDate(date);
 
         diaryRepository.save(nowDiary);
 
+        logger.info("end to create  diary");
     }
 
     private DateWeather getDateWeather(LocalDate date) {
         List<DateWeather> dateWeatherListFromDB = dateWeatherRepository.findAllByDate(date);
-        if(dateWeatherListFromDB.size()==0){
+        if (dateWeatherListFromDB.size() == 0) {
             // 새로 api에서 날씨 정보를 가져와야한다
             // 정책상... 현재 날씨를 가져오도록 하거나... 날씨 없이 일기를 쓰도록...
             return getWeatherFromApi();
@@ -95,8 +102,8 @@ public class DiaryService {
     }
 
     @Transactional(readOnly = true)
-
     public List<Diary> readDiary(LocalDate date) {
+        logger.debug("read diary");
         List<Diary> allByDate = diaryRepository.findAllByDate(date);
 
         return allByDate;
