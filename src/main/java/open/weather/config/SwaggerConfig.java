@@ -18,10 +18,8 @@ public class SwaggerConfig {
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("zerobase.weather"))
+                .apis(RequestHandlerSelectors.basePackage("open.weather"))
                 .paths(PathSelectors.any())
-//                .paths(PathSelectors.none()) // 아무 method도 보여주지 않음.
-//                .paths(PathSelectors.ant(/read/**)) // 특정 patter경로를 보여줌
                 .build().apiInfo(apiInfo());
     }
 
