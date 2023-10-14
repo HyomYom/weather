@@ -1,4 +1,4 @@
-package zerobase.weather.domain;
+package open.weather.domain;
 
 
 import lombok.*;

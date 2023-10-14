@@ -1,11 +1,11 @@
-package zerobase.weather.controller;
+package open.weather.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import zerobase.weather.domain.Diary;
-import zerobase.weather.service.DiaryService;
+import open.weather.domain.Diary;
+import open.weather.service.DiaryService;
 
 import java.time.LocalDate;
 import java.util.List;

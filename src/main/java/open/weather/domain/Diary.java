@@ -1,7 +1,6 @@
-package zerobase.weather.domain;
+package open.weather.domain;
 
 import lombok.*;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
